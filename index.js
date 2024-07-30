@@ -6,6 +6,10 @@ const path = require("path");
 const app = express();
 const PORT = 8000;
 
+//middleware
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
 //connect to mongodb
 mongoose
   .connect("mongodb://localhost:27017/blogapp")

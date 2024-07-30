@@ -180,3 +180,51 @@ console.log("Error connecting to MongoDB", err);
 });
 
 connect is a method of mongoose module to connect with the database, we have to pass the url and also the name of the database to connect with, which returns a promise and then catch can be used to handle the promise.
+
+## parsing middlewares
+
+app.use(express.json());
+PURPOSE: this middleware is used to parse incoming JSON payloads, extracts the JSON data sent in the body of the req, and makes it available in req.body
+
+app.use(express.urlencoded({ extended: true }));
+PURPOSE: this middleware parses encoded form data and makes it available in req.body
+
+## virtual function
+
+userSchema.static("matchPassword", async function (email, password) {
+const user = await this.findOne({
+email,
+});
+
+if (!user) throw new Error("User not found");
+
+const salt = user.salt;
+const hashedPassword = user.password;
+
+const userProvidedHash = createHmac("sha256", salt)
+.update(password)
+.digest("hex");
+
+if (hashedPassword !== userProvidedHash) throw new Error("Invalid Password");
+
+const userWithoutSensitiveData = user.toObject();
+delete userWithoutSensitiveData.password;
+delete userWithoutSensitiveData.salt;
+
+return userWithoutSensitiveData;
+});
+
+this is a virtual function to match the password, user provided email bata salt ra hashed password required garxau db bata ani, user provided pass ra salt use garera naya pass hash garxau, hash match vayo vane user return garne without sensitive data...
+
+## sign in route handle
+
+router.post("/signin", async (req, res) => {
+const { email, password } = req.body;
+
+const user = await User.matchPassword(email, password);
+
+console.log(user);
+return res.redirect("/");
+});
+
+signin route ma post rq aayo vane, frontend bata email ra pass extract garxau, matchPassword function call garxaum, match vayo (i.e no error) vane redirect the homepage...
