@@ -55,11 +55,11 @@ npm i nodemon -D
 const { Schema, model } = require("mongoose");
 
 const userSchema = new Schema(
-  {
-    fullName: {
-      type: String,
-      required: true,
-    },
+{
+fullName: {
+type: String,
+required: true,
+},
 
     email: {
       type: String,
@@ -83,10 +83,11 @@ const userSchema = new Schema(
       enum: ["USER", "ADMIN"],
       default: "USER",
     },
-  },
-  {
-    timestamps: true,
-  }
+
+},
+{
+timestamps: true,
+}
 );
 
 const User = model("user", userSchema);
@@ -97,3 +98,28 @@ module.exports = User;
 
 enum - can be used to model data with limited set of possible values, it is basically an array, if role is assigned to any other value rather than the enum has been defined to, mongoose throws an error..
 
+## Mongoose pre-save middleware
+
+userSchema.pre("save", function (next) {
+const user = this;
+
+if (!user.isModified("password")) return next();
+
+const salt = randomBytes(16).toString('hex');
+const hashedPassword = createHmac("sha256", salt)
+.update(user.password)
+.digest("hex");
+
+this.salt = salt;
+this.password = hashedPassword;
+
+next();
+});
+
+Its a mongoose presave middlware for hashing a user's password before saving the user document to the database.
+
+We are generating a 16 digit hashed password with a salt for the user's password and assigning the salt to user.salt and hashedPassword to user.password,
+
+We are using a built in module crypto, for generating hash passwords using createHmac('sha256', salt) and randomBytes() method.
+
+createHmac('sha256', salt) : create a hash with sha256 algorithm, with the provided salt.
