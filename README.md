@@ -76,7 +76,7 @@ The project structure is organized as follows:
 ### Setting up Express
 
 ```javascript
-const express = require('express');
+const express = require("express");
 
 const app = express();
 const PORT = 8000;
@@ -89,10 +89,10 @@ app.listen(PORT, () => {
 ### Setting up EJS as View Engine
 
 ```javascript
-const path = require('path');
+const path = require("path");
 
-app.set('view engine', 'ejs');
-app.set('views', path.resolve('./views'));
+app.set("view engine", "ejs");
+app.set("views", path.resolve("./views"));
 ```
 
 ### EJS Features
@@ -116,7 +116,7 @@ npm install nodemon -D
 ### User Model
 
 ```javascript
-const { Schema, model } = require('mongoose');
+const { Schema, model } = require("mongoose");
 
 const userSchema = new Schema(
   {
@@ -124,13 +124,13 @@ const userSchema = new Schema(
     email: { type: String, required: true, unique: true },
     salt: { type: String, required: true },
     password: { type: String, required: true },
-    profileImageURL: { type: String, default: '/images/default.png' },
-    role: { type: String, enum: ['USER', 'ADMIN'], default: 'USER' },
+    profileImageURL: { type: String, default: "/images/default.png" },
+    role: { type: String, enum: ["USER", "ADMIN"], default: "USER" },
   },
   { timestamps: true }
 );
 
-const User = model('user', userSchema);
+const User = model("user", userSchema);
 
 module.exports = User;
 ```
@@ -138,17 +138,17 @@ module.exports = User;
 ### Mongoose Pre-save Middleware
 
 ```javascript
-const { randomBytes, createHmac } = require('crypto');
+const { randomBytes, createHmac } = require("crypto");
 
-userSchema.pre('save', function (next) {
+userSchema.pre("save", function (next) {
   const user = this;
 
-  if (!user.isModified('password')) return next();
+  if (!user.isModified("password")) return next();
 
-  const salt = randomBytes(16).toString('hex');
-  const hashedPassword = createHmac('sha256', salt)
+  const salt = randomBytes(16).toString("hex");
+  const hashedPassword = createHmac("sha256", salt)
     .update(user.password)
-    .digest('hex');
+    .digest("hex");
 
   this.salt = salt;
   this.password = hashedPassword;
@@ -162,23 +162,23 @@ userSchema.pre('save', function (next) {
 ### User Routes
 
 ```javascript
-const { Router } = require('express');
-const User = require('../models/user');
+const { Router } = require("express");
+const User = require("../models/user");
 
 const router = Router();
 
-router.get('/signin', (req, res) => {
-  return res.render('signin');
+router.get("/signin", (req, res) => {
+  return res.render("signin");
 });
 
-router.get('/signup', (req, res) => {
-  return res.render('signup');
+router.get("/signup", (req, res) => {
+  return res.render("signup");
 });
 
-router.post('/signup', async (req, res) => {
+router.post("/signup", async (req, res) => {
   const { fullName, email, password } = req.body;
   await User.create({ fullName, email, password });
-  return res.redirect('/');
+  return res.redirect("/");
 });
 
 module.exports = router;
@@ -187,22 +187,22 @@ module.exports = router;
 Import the routes in `index.js`:
 
 ```javascript
-const userRoute = require('./routes/user');
-app.use('/user', userRoute);
+const userRoute = require("./routes/user");
+app.use("/user", userRoute);
 ```
 
 ## Connecting to MongoDB
 
 ```javascript
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 
 mongoose
-  .connect('mongodb://localhost:27017/blogapp')
+  .connect("mongodb://localhost:27017/blogapp")
   .then(() => {
-    console.log('Connected to MongoDB');
+    console.log("Connected to MongoDB");
   })
   .catch((err) => {
-    console.log('Error connecting to MongoDB', err);
+    console.log("Error connecting to MongoDB", err);
   });
 ```
 
@@ -219,16 +219,16 @@ app.use(express.urlencoded({ extended: true }));
 userSchema.statics.matchPassword = async function (email, password) {
   const user = await this.findOne({ email });
 
-  if (!user) throw new Error('User not found');
+  if (!user) throw new Error("User not found");
 
   const salt = user.salt;
   const hashedPassword = user.password;
 
-  const userProvidedHash = createHmac('sha256', salt)
+  const userProvidedHash = createHmac("sha256", salt)
     .update(password)
-    .digest('hex');
+    .digest("hex");
 
-  if (hashedPassword !== userProvidedHash) throw new Error('Invalid Password');
+  if (hashedPassword !== userProvidedHash) throw new Error("Invalid Password");
 
   const userWithoutSensitiveData = user.toObject();
   delete userWithoutSensitiveData.password;
@@ -241,14 +241,47 @@ userSchema.statics.matchPassword = async function (email, password) {
 ## Sign In Route Handling
 
 ```javascript
-router.post('/signin', async (req, res) => {
+router.post("/signin", async (req, res) => {
   const { email, password } = req.body;
 
   const user = await User.matchPassword(email, password);
 
   console.log(user);
-  return res.redirect('/');
+  return res.redirect("/");
 });
+```
+
+## JWT tokens
+
+JWT require garxam, euta secret key define garxam, ani function banaune euta token banuana arko validate garna...
+To create token, Create a payload, ani tyo payload ko JWT.sign(payload, secret);
+To validate token, JWT.verify(token, secret);
+
+```javascript
+const JWT = require("jsonwebtoken");
+
+const secret = "erss2005";
+
+function createTokenForUser(user) {
+  const payload = {
+    _id: user._id,
+    email: user.email,
+    role: user.role,
+    profileImageUrl: user.profileImageUrl,
+  };
+  const token = JWT.sign(payload, secret);
+  return token;
+}
+
+function validateToken(token) {
+  const payload = JWT.verify(token, secret);
+  return validateToken;
+}
+
+module.exports = {
+  createTokenForUser,
+  validateToken,
+};
 ```
 
 ## License
