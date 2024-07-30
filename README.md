@@ -165,3 +165,18 @@ const userRoute = require("./routes/user");
 app.use("/user", userRoute);
 
 it will use userRoute whenever we go to /user route and other branch routes will be accessible...
+
+## connecting to mongodb
+
+const mongoose = require('mongoose');
+
+mongoose
+.connect("mongodb://localhost:27017/blogapp")
+.then(() => {
+console.log("Connected to MongoDB");
+})
+.catch((err) => {
+console.log("Error connecting to MongoDB", err);
+});
+
+connect is a method of mongoose module to connect with the database, we have to pass the url and also the name of the database to connect with, which returns a promise and then catch can be used to handle the promise.
