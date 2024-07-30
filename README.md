@@ -123,3 +123,45 @@ We are generating a 16 digit hashed password with a salt for the user's password
 We are using a built in module crypto, for generating hash passwords using createHmac('sha256', salt) and randomBytes() method.
 
 createHmac('sha256', salt) : create a hash with sha256 algorithm, with the provided salt.
+
+## Creating routes
+
+const { Router } = require("express");
+const User = require("../models/user");
+
+const router = Router();
+
+router.get("/signin", (req, res) => {
+return res.render("signin");
+});
+
+router.get("/signup", (req, res) => {
+return res.render("signup");
+});
+
+router.post("/signup", async (req, res) => {
+const { fullName, email, password } = req.body;
+await User.create({
+fullName,
+email,
+password,
+});
+return res.redirect("/");
+});
+
+module.exports = router;
+
+I imported router from express, router.get handles get req on '/pathname' and gives a callback function, having arguments (req, res)=>{
+//block of code...
+}
+
+res.render renders the page '/',
+res.redirect redirects to the page '/'
+
+We should import the router in the index.js file
+// import routes
+const userRoute = require("./routes/user");
+
+app.use("/user", userRoute);
+
+it will use userRoute whenever we go to /user route and other branch routes will be accessible...
