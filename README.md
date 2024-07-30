@@ -49,3 +49,51 @@ we do not require to restart our app frequently in the prodcution level, so its 
 
 for that:
 npm i nodemon -D
+
+## creating a model
+
+const { Schema, model } = require("mongoose");
+
+const userSchema = new Schema(
+  {
+    fullName: {
+      type: String,
+      required: true,
+    },
+
+    email: {
+      type: String,
+      required: true,
+      unique: true,
+    },
+    salt: {
+      type: String,
+      required: true,
+    },
+    password: {
+      type: String,
+      required: true,
+    },
+    profileImageURl: {
+      type: String,
+      default: "/images/default.png",
+    },
+    role: {
+      type: String,
+      enum: ["USER", "ADMIN"],
+      default: "USER",
+    },
+  },
+  {
+    timestamps: true,
+  }
+);
+
+const User = model("user", userSchema);
+
+module.exports = User;
+
+.............................................
+
+enum - can be used to model data with limited set of possible values, it is basically an array, if role is assigned to any other value rather than the enum has been defined to, mongoose throws an error..
+
