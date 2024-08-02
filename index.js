@@ -28,6 +28,7 @@ app.set("views", path.resolve("./views"));
 
 // import routes
 const userRoute = require("./routes/user");
+const blogRoute = require("./routes/blog");
 
 app.get("/", (req, res) => {
   res.render("home", {
@@ -36,6 +37,7 @@ app.get("/", (req, res) => {
 });
 
 app.use("/user", userRoute);
+app.use("/blog", blogRoute);
 
 app.listen(PORT, () => {
   console.log(`Server started at PORT: ${PORT}`);

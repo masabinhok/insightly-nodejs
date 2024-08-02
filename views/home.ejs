@@ -5,7 +5,8 @@
     <title>Home Page</title>
   </head>
   <body>
-    <%- include('./partials/navbar') %> <%= JSON.stringify(user) %> <%-
-    include('./partials/scripts') %>
+    <%- include('./partials/navbar') %>
+    <div class="container mt-4"><%= JSON.stringify(user) %></div>
+    <%- include('./partials/scripts') %>
   </body>
 </html>
