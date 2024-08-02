@@ -1,14 +1,17 @@
 const express = require("express");
+const cookieParser = require("cookie-parser");
 const mongoose = require("mongoose");
+const { checkForAuthenticationCookie } = require("./middlewares/auth");
 
 const path = require("path");
-
 const app = express();
 const PORT = 8000;
 
 //middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(cookieParser());
+app.use(checkForAuthenticationCookie("token"));
 
 //connect to mongodb
 mongoose
@@ -27,7 +30,9 @@ app.set("views", path.resolve("./views"));
 const userRoute = require("./routes/user");
 
 app.get("/", (req, res) => {
-  res.render("home");
+  res.render("home", {
+    user: req.user,
+  });
 });
 
 app.use("/user", userRoute);

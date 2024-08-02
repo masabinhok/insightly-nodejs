@@ -15,8 +15,10 @@
   <div class="collapse navbar-collapse" id="navbarSupportedContent">
     <ul class="navbar-nav">
       <li class="nav-item active">
-        <a class="nav-link" href="#">Home <span class="sr-only"></span></a>
+        <a class="nav-link" href="/">Home <span class="sr-only"></span></a>
       </li>
+
+      <% if (locals.user) { %>
       <li class="nav-item">
         <a class="nav-link" href="#">Add Blog</a>
       </li>
@@ -33,12 +35,25 @@
           Sabin Shrestha
         </a>
         <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-          <a class="dropdown-item" href="#">Log out</a>
-          <a class="dropdown-item" href="#">Another action</a>
-          <div class="dropdown-divider"></div>
-          <a class="dropdown-item" href="#">Something else here</a>
+          <a class="dropdown-item" href="/user/logout">Log out</a>
         </div>
       </li>
+      <% } else { %>
+      <li class="nav-item">
+        <a class="nav-link" href="/user/signup">Create Account</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="/user/signin">Signin</a>
+      </li>
+
+      <% } %>
     </ul>
   </div>
 </nav>
+
+<% if (locals.error) { %>
+<div class="container mt-4">
+  <div class="alert alert-danger" role="alert"><%= error %></div>
+</div>
+
+<% } %>
