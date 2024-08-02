@@ -2,6 +2,7 @@ const express = require("express");
 const cookieParser = require("cookie-parser");
 const mongoose = require("mongoose");
 const { checkForAuthenticationCookie } = require("./middlewares/auth");
+const Blog = require("./models/blog");
 
 const path = require("path");
 const app = express();
@@ -12,6 +13,8 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(checkForAuthenticationCookie("token"));
+//serve static files for anything insider public folder
+app.use(express.static(path.resolve("./public")));
 
 //connect to mongodb
 mongoose
@@ -30,9 +33,11 @@ app.set("views", path.resolve("./views"));
 const userRoute = require("./routes/user");
 const blogRoute = require("./routes/blog");
 
-app.get("/", (req, res) => {
+app.get("/", async (req, res) => {
+  const allBlogs = await Blog.find({}).sort("createdAt");
   res.render("home", {
     user: req.user,
+    blogs: allBlogs,
   });
 });
 
