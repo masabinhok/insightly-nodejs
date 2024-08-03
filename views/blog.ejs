@@ -50,6 +50,13 @@
       </form>
       <% } %>
     </div>
+    <div class="container">
+      <% if (locals.user.email === blog.createdBy.email) { %>
+      <form action="/blog/delete/<%= blog._id  %> " method="POST">
+        <button class="btn btn-danger mt-4">Delete</button>
+      </form>
+      <% } %>
+    </div>
 
     <div class="container mt-3">
       <h1>Comments (<%= comments.length %>)</h1>

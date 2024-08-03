@@ -52,7 +52,6 @@ router.get("/:id", async (req, res) => {
     blogId: req.params.id,
   }).populate("createdBy");
 
-
   if (!req.user) {
     return res.render("blog", {
       userName: null,
@@ -64,13 +63,29 @@ router.get("/:id", async (req, res) => {
 
   const currentUserId = req.user._id;
   const user = await User.find({ _id: currentUserId });
+
   const userName = user[0].fullName;
+  console.log(blog, req.user);
   return res.render("blog", {
+    currentUserId,
     user: req.user,
     userName,
     blog,
     comments,
   });
+});
+
+router.post("/delete/:blogId", async (req, res) => {
+  const user = req.user;
+  console.log(user);
+  const userId = user._id;
+  console.log(userId);
+  const blog = await Blog.findById(req.params.blogId);
+  if (blog.createdBy == userId) {
+    await Blog.findByIdAndDelete(req.params.blogId);
+    return res.redirect("/");
+  }
+  return res.redirect("/");
 });
 
 router.post("/comment/:blogId", async (req, res) => {
