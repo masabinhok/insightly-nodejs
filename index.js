@@ -13,7 +13,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(checkForAuthenticationCookie("token"));
-//serve static files for anything insider public folder
+//serve static files for anything inside public folder
 app.use(express.static(path.resolve("./public")));
 
 //connect to mongodb
