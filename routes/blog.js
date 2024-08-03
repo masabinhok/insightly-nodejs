@@ -2,6 +2,7 @@ const express = require("express");
 const multer = require("multer");
 const Blog = require("../models/blog");
 const User = require("../models/user");
+const Comment = require("../models/comment");
 
 const path = require("path");
 const router = express.Router();
@@ -39,6 +40,13 @@ router.get("/add-new", async (req, res) => {
 
 router.get("/:id", async (req, res) => {
   const blog = await Blog.findById(req.params.id).populate("createdBy");
+
+  const comments = await Comment.find({
+    blogId: req.params.id,
+  }).populate("createdBy");
+
+  console.log(comments);
+
   if (!req.user) {
     return res.render("blog", {
       userName: null,
@@ -46,6 +54,7 @@ router.get("/:id", async (req, res) => {
       user: req.user,
     });
   }
+
   const currentUserId = req.user._id;
   const user = await User.find({ _id: currentUserId });
   const userName = user[0].fullName;
@@ -53,7 +62,17 @@ router.get("/:id", async (req, res) => {
     user: req.user,
     userName,
     blog,
+    comments,
   });
+});
+
+router.post("/comment/:blogId", async (req, res) => {
+  await Comment.create({
+    content: req.body.content,
+    blogId: req.params.blogId,
+    createdBy: req.user._id,
+  });
+  return res.redirect(`/blog/${req.params.blogId}`);
 });
 
 router.post("/", upload.single("coverImage"), async (req, res) => {
