@@ -43,10 +43,18 @@
         alt="profileImageURL"
       />
     </div>
+    <div class="container">
+      <% if (locals.user) { %>
+      <form action="/blog/like/<%= blog._id  %> " method="POST">
+        <button class="btn btn-success mt-4">Like (<%= blog.likes %>)</button>
+      </form>
+      <% } %>
+    </div>
 
-    <% if (locals.user) { %>
     <div class="container mt-3">
       <h1>Comments (<%= comments.length %>)</h1>
+      <% if (locals.user) { %>
+
       <form action="/blog/comment/<%= blog._id  %>" method="POST">
         <div class="mb-3">
           <input
@@ -58,9 +66,10 @@
         </div>
         <button type="submit" class="btn btn-sm btn-primary">Add</button>
       </form>
+      <% } %>
 
       <div class="mt-3">
-        <% comments.forEach(comment=> { %>
+        <% comments.forEach(comment => { %>
         <div>
           <img
             src="<%= comment.createdBy.profileImageURl  %>"
@@ -73,6 +82,7 @@
         <% }) %>
       </div>
     </div>
-    <% } %> <%- include('./partials/scripts') %>
+
+    <%- include('./partials/scripts') %>
   </body>
 </html>

@@ -10,20 +10,22 @@
     <div class="container mt-3">
       <div class="row">
         <% blogs.forEach(blog => { %>
-          <div class="col-md-4 mb-4">
-            <div class="card" style="width: 18rem;">
-              <img
-                src="<%= blog.coverImageURL %>"
-                class="card-img-top"
-                alt="<%= blog.title %>"
-              />
-              <div class="card-body">
-                <h5 class="card-title"><%= blog.title %></h5>
-                <p class="card-text"><%= blog.body.substring(0, 100) %>...</p>
-                <a href="/blog/<%= blog._id %>" class="btn btn-primary">Read More</a>
-              </div>
+        <div class="col-md-4 mb-4">
+          <div class="card" style="width: 18rem">
+            <img
+              src="<%= blog.coverImageURL %>"
+              class="card-img-top"
+              alt="<%= blog.title %>"
+            />
+            <div class="card-body">
+              <h5 class="card-title"><%= blog.title %></h5>
+              <p class="card-text"><%= blog.body.substring(0, 100) %>...</p>
+              <a href="/blog/<%= blog._id %>" class="btn btn-primary"
+                >Read More</a
+              >
             </div>
           </div>
+        </div>
         <% }) %>
       </div>
     </div>

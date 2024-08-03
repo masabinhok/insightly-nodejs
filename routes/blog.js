@@ -38,6 +38,13 @@ router.get("/add-new", async (req, res) => {
   });
 });
 
+router.post("/like/:id", async (req, res) => {
+  const blog = await Blog.findById(req.params.id);
+  blog.likes = blog.likes + 1;
+  await blog.save();
+  return res.redirect(`/blog/${req.params.id}`);
+});
+
 router.get("/:id", async (req, res) => {
   const blog = await Blog.findById(req.params.id).populate("createdBy");
 
@@ -45,13 +52,13 @@ router.get("/:id", async (req, res) => {
     blogId: req.params.id,
   }).populate("createdBy");
 
-  console.log(comments);
 
   if (!req.user) {
     return res.render("blog", {
       userName: null,
       blog,
       user: req.user,
+      comments,
     });
   }
 
