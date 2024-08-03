@@ -1,6 +1,22 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
+    <style>
+      .userprofile {
+        display: flex;
+        align-items: center;
+        border: 2px solid black;
+        padding: 10px;
+        border-radius: 10px;
+        width: fit-content;
+        gap: 20px;
+      }
+
+      .userprofile img {
+        width: 100px;
+        height: 100px;
+      }
+    </style>
     <%- include('./partials/head') %>
     <title>Blog</title>
   </head>
@@ -15,6 +31,17 @@
         alt="blog cover image"
       />
       <p><%= blog.body %></p>
+    </div>
+
+    <div class="container mt-4 userprofile">
+      <h1>Created By:</h1>
+
+      <h1><%= blog.createdBy.fullName %></h1>
+      <img
+        style="border-radius: 50%"
+        src="<%= blog.createdBy.profileImageURl  %>"
+        alt="profileImageURL"
+      />
     </div>
 
     <%- include('./partials/scripts') %>

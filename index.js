@@ -3,6 +3,7 @@ const cookieParser = require("cookie-parser");
 const mongoose = require("mongoose");
 const { checkForAuthenticationCookie } = require("./middlewares/auth");
 const Blog = require("./models/blog");
+const User = require("./models/user");
 
 const path = require("path");
 const app = express();
@@ -35,8 +36,19 @@ const blogRoute = require("./routes/blog");
 
 app.get("/", async (req, res) => {
   const allBlogs = await Blog.find({}).sort("createdAt");
+  if (!req.user) {
+    return res.render("home", {
+      userName: null,
+      user: req.user,
+      blogs: allBlogs,
+    });
+  }
+  const currentUserId = req.user._id;
+  const user = await User.find({ _id: currentUserId });
+  const userName = user[0].fullName;
   res.render("home", {
-    user: req.user,
+    user,
+    userName,
     blogs: allBlogs,
   });
 });

@@ -1,6 +1,7 @@
 const express = require("express");
 const multer = require("multer");
 const Blog = require("../models/blog");
+const User = require("../models/user");
 
 const path = require("path");
 const router = express.Router();
@@ -20,16 +21,37 @@ const upload = multer({
   storage: storage,
 });
 
-router.get("/add-new", (req, res) => {
+router.get("/add-new", async (req, res) => {
+  if (!req.user) {
+    return res.render("addBlog", {
+      userName: null,
+      user: req.user,
+    });
+  }
+  const currentUserId = req.user._id;
+  const user = await User.find({ _id: currentUserId });
+  const userName = user[0].fullName;
   return res.render("addBlog", {
     user: req.user,
+    userName,
   });
 });
 
 router.get("/:id", async (req, res) => {
-  const blog = await Blog.findById(req.params.id);
+  const blog = await Blog.findById(req.params.id).populate("createdBy");
+  if (!req.user) {
+    return res.render("blog", {
+      userName: null,
+      blog,
+      user: req.user,
+    });
+  }
+  const currentUserId = req.user._id;
+  const user = await User.find({ _id: currentUserId });
+  const userName = user[0].fullName;
   return res.render("blog", {
     user: req.user,
+    userName,
     blog,
   });
 });
