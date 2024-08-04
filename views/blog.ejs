@@ -81,9 +81,9 @@
         <% comments.forEach(comment => { %>
         <div>
           <img
-            src="<%= comment.createdBy.profileImageURl  %>"
+            src="../<%= comment.createdBy.profileImageURl  %>"
             width="50px"
-            alt=""
+            alt="profileImageURl"
           />
           <%= comment.createdBy.fullName %>:
           <pre><%= comment.content  %></pre>
