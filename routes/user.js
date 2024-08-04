@@ -8,7 +8,7 @@ const router = Router();
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, path.resolve("./public/uploads"));
+    cb(null, path.resolve("./public/profiles"));
   },
   filename: function (req, file, cb) {
     const fileName = `${Date.now()}-${file.originalname}`;
@@ -16,7 +16,7 @@ const storage = multer.diskStorage({
   },
 });
 
-const upload = multer({
+const profile = multer({
   storage: storage,
 });
 
@@ -46,7 +46,7 @@ router.get("/logout", (req, res) => {
   return res.clearCookie("token").redirect("/");
 });
 
-router.post("/signup", upload.single("profileImageURl"), async (req, res) => {
+router.post("/signup", profile.single("profileImageURl"), async (req, res) => {
   const { fullName, email, password } = req.body;
   console.log(req.file);
 
@@ -55,7 +55,7 @@ router.post("/signup", upload.single("profileImageURl"), async (req, res) => {
     fullName,
     email,
     password,
-    profileImageURl: `uploads/${req.file.filename}`,
+    profileImageURl: `profiles/${req.file.filename}`,
   });
   return res.redirect("/user/signin");
 });
